@@ -1,7 +1,7 @@
-package com.poketoilet.cobblemonext.mixin;
+package com.poopycobblemon.cobblemonext.mixin;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
-import com.poketoilet.cobblemonext.ExtEvents;
+import com.poopycobblemon.cobblemonext.ExtEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

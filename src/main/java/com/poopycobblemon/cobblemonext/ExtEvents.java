@@ -1,4 +1,4 @@
-package com.poketoilet.cobblemonext;
+package com.poopycobblemon.cobblemonext;
 
 import com.cobblemon.mod.common.api.battles.model.PokemonBattle;
 import com.cobblemon.mod.common.battles.pokemon.BattlePokemon;
