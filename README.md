@@ -33,7 +33,9 @@ Install JDK 21, Node.js 22 and Python 3.11+, then run from this repository:
 python scripts/build.py
 ```
 
-This downloads hash-verified Cobblemon, builds the library, tests the Showdown bridge, and writes the JAR and `SHA256SUMS.txt` to `dist/`. No parent repository or modpack installation is needed. For incremental builds, prepare dependencies once with `python scripts/prepare_dependencies.py`, then use `./gradlew build` (`./gradlew.bat build` on Windows).
+Gradle resolves Cobblemon from Modrinth Maven using the fixed version ID in [gradle.properties](gradle.properties), verifies [committed dependency checksums](gradle/verification-metadata.xml), and extracts its simulator into `build/showdown` for bridge tests. The script writes the JAR and `SHA256SUMS.txt` to `dist/`. No parent repository or modpack installation is needed. For incremental builds, use `./gradlew build` (`./gradlew.bat build` on Windows); dependency preparation and all checks run automatically.
+
+When updating a Maven dependency, change its version ID, regenerate `gradle/verification-metadata.xml` with `./gradlew --write-verification-metadata sha256 build`, and review the new checksums against the publisher before committing. CI only verifies committed checksums. When Ext dependencies change, update verification metadata in both repositories; the parent file governs composite builds.
 
 ## Install and release
 

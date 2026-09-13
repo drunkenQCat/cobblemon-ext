@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import release
-from prepare_dependencies import extract_safe
+from build_support import extract_safe
 
 
 def make_jar(path, mod_id, version='1.2', missing_mixin=False):

@@ -1,7 +1,7 @@
 /*
  * Cobblemon Ext Showdown 补丁无头测试
  *
- * 用锁定 Cobblemon 的 Showdown 引擎（.deps/showdown）跑一场真实对战，
+ * 用锁定 Cobblemon 的 Showdown 引擎（build/showdown）跑一场真实对战，
  * 注入 cobblemon_ext_patch.js，验证两条自定义协议行的引擎级效果：
  *   1. cobblemonext_boost  → 敌方速度 -1（真实 boost + -unboost 战报）
  *   2. cobblemonext_damage → 真实扣血 + 完整 split 协议（保底 1 HP）

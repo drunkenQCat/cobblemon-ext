@@ -1,5 +1,5 @@
 /* Run from the repository root: node showdowntest/bridge_regression_test.js
- * Uses the pinned Cobblemon simulator's index.js callback path in .deps/showdown.
+ * Uses the pinned Cobblemon simulator's index.js callback path in build/showdown.
  * SHOWDOWN_DIR can select a different extracted simulator for local diagnostics.
  * This checks the wire contract consumed by Cobblemon, not a Minecraft UI mock.
  */
@@ -11,7 +11,7 @@ const vm = require('node:vm');
 const {createRequire} = require('node:module');
 const {randomUUID} = require('node:crypto');
 const root = path.resolve(__dirname, '..');
-const showdown = path.resolve(process.env.SHOWDOWN_DIR || path.join(root, '.deps/showdown'));
+const showdown = path.resolve(process.env.SHOWDOWN_DIR || path.join(root, 'build/showdown'));
 const patch = process.argv[2] ? path.resolve(process.argv[2]) : path.join(root,
   'src/main/resources/assets/cobblemon_ext/showdown/cobblemon_ext_patch.js');
 const context = vm.createContext({require: createRequire(path.join(showdown, 'index.js')), console});

@@ -40,14 +40,25 @@ neoForge {
     }
 }
 
-// Cobblemon 本体与 Kotlin stdlib：仅编译期
+// Maven resolves the exact Cobblemon artifact used for compilation and bridge tests.
 repositories {
     mavenCentral()
+    exclusiveContent {
+        forRepository {
+            maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
+        }
+        filter { includeGroup 'maven.modrinth' }
+    }
+}
+
+configurations {
+    cobblemonArtifact { canBeConsumed = false; transitive = false }
+    compileOnly.extendsFrom cobblemonArtifact
 }
 
 dependencies {
-    compileOnly files('.deps/cobblemon.jar')
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:2.0.20"
+    cobblemonArtifact "maven.modrinth:cobblemon:${cobblemon_version}"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
 }
 
 // Exercise the bridge against the exact simulator shipped with pinned Cobblemon.
@@ -55,9 +66,31 @@ tasks.register('bridgeRegression', Exec) {
     workingDir projectDir
     commandLine 'node', 'showdowntest/bridge_regression_test.js'
 }
-tasks.register('showdownRegression', Exec) {
+def prepareShowdown = tasks.register('prepareShowdown', Exec) {
+    inputs.files configurations.cobblemonArtifact
+    inputs.files 'scripts/extract_showdown.py', 'scripts/build_support.py'
+    outputs.dir layout.buildDirectory.dir('showdown')
     workingDir projectDir
-    commandLine 'node', 'showdowntest/headless_test.js', '.deps/showdown',
+    doFirst {
+        commandLine 'python', 'scripts/extract_showdown.py',
+                configurations.cobblemonArtifact.singleFile.absolutePath,
+                layout.buildDirectory.dir('showdown').get().asFile.absolutePath
+    }
+}
+
+tasks.register('showdownRegression', Exec) {
+    dependsOn prepareShowdown
+    workingDir projectDir
+    commandLine 'node', 'showdowntest/headless_test.js', layout.buildDirectory.dir('showdown').get().asFile.absolutePath,
             'src/main/resources/assets/cobblemon_ext/showdown/cobblemon_ext_patch.js'
 }
 tasks.named('check') { dependsOn 'bridgeRegression', 'showdownRegression' }
+
+// Run packaging failure-path checks from both Gradle and the release entry point.
+tasks.register('releaseRegression', Exec) {
+    workingDir projectDir
+    commandLine 'python', '-m', 'unittest', 'discover', '-s', 'scripts', '-p', 'test_*.py'
+}
+tasks.named('check') { dependsOn 'releaseRegression' }
+
+tasks.named('bridgeRegression') { dependsOn prepareShowdown }

@@ -33,7 +33,9 @@ JavaScript 补丁在运行中的 GraalJS 上下文包装 `BattleStream._writeLin
 python scripts/build.py
 ```
 
-脚本下载并校验 Cobblemon，构建本库，测试 Showdown 桥接，在 `dist/` 生成 JAR 和 `SHA256SUMS.txt`，不需要父仓库或整合包。增量构建时，先运行一次 `python scripts/prepare_dependencies.py`，再用 `./gradlew build`（Windows 使用 `./gradlew.bat build`）。
+Gradle 根据 [gradle.properties](gradle.properties) 中固定的版本 ID 从 Modrinth Maven 解析 Cobblemon，校验[已提交的依赖哈希](gradle/verification-metadata.xml)，并将其模拟器解压到 `build/showdown` 用于桥接测试。脚本在 `dist/` 生成 JAR 和 `SHA256SUMS.txt`，不需要父仓库或整合包。增量构建直接使用 `./gradlew build`（Windows 使用 `./gradlew.bat build`），自动准备依赖并运行所有检查。
+
+更新 Maven 依赖时，修改版本 ID，运行 `./gradlew --write-verification-metadata sha256 build` 生成校验文件，并对照发布方核实新增哈希后提交。CI 只验证已提交的哈希。Ext 的依赖变化时，两仓库都需要更新校验文件；组合构建使用父仓库的校验文件。
 
 ## 安装与发布
 
