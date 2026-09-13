@@ -1,0 +1,7 @@
+# Project icon
+
+[Cobblemon Ext icon](cobblemon-ext.png), generated with the built-in OpenAI image tool. Licensed under [CC BY-NC 4.0](../LICENSE-ASSETS.md).
+
+## Prompt
+
+Use case: logo-brand. Create ONE finished square 1024x1024 PNG icon for the Minecraft NeoForge library Cobblemon Ext, for a CurseForge project avatar. No words or letters. Design a very readable chunky pixel-art emblem: one large red-and-white monster-catching ball at the center, black horizontal belt and central white button, flanked by bold cyan pixel code angle brackets < and >, conveying an extension API and connection bridge. Two short blocky cyan connector traces link brackets to the ball. No toilet, no characters, no computer monitor. Crisp deliberately stair-stepped pixel edges and large simple pixel clusters, subtle blocky shading, dark ink outlines; premium indie Minecraft item-sprite aesthetic, not photorealistic, not smooth vector. Opaque deep midnight navy square background with a small teal halo immediately behind the emblem. Palette porcelain white, pale ice blue, coral red, rich teal, near-black navy. Single centered compact emblem using about 78 percent of canvas, generous safe margin, no frame, no mockup, no collage, no watermark. Strong contrast, legible as a tiny 64px avatar. It must feel like a companion to the Poopy Cobblemon toilet-and-ball icon, with the same background, outline weight and red-white ball design.
