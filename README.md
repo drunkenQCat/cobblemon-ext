@@ -41,6 +41,22 @@ When updating a Maven dependency, change its version ID, regenerate `gradle/veri
 
 Install `cobblemon-ext-1.2.jar` on client and server alongside Cobblemon and Kotlin for Forge. The library can be used independently of [Poopy Cobblemon](https://github.com/drunkenQCat/Poopy-Cobblemon), which pins it as a Git submodule.
 
-This repository has its own [`VERSION`](VERSION). For a release, update it and add notes under `releases/`, run `python scripts/build.py --tag v1.2` with the intended version, push to `main`, and wait for CI. Push the matching `v<version>` tag to publish after Ubuntu and Windows builds pass. The workflow uploads a draft, verifies downloaded assets, then publishes; manual runs only validate.
+This repository has its own [`VERSION`](VERSION). For a release, update it and add notes under `releases/`, run `python scripts/build.py --tag v1.2` with the intended version, push to `main`, and wait for CI. Push the matching `v<version>` tag to publish after Ubuntu and Windows builds pass. [GitHub Actions](.github/workflows/ci.yml) builds, tests and previews publishing without credentials on Ubuntu and Windows, then compares SHA-256 hashes of both packages. A version tag publishes to GitHub and then CurseForge only after both builds pass and the artifacts match. Branch pushes, pull requests and manual runs only validate.
+
+The CurseForge project ID is **1693831**; upload settings live in [publishing/curseforge.json](publishing/curseforge.json). Add `CURSEFORGE_TOKEN` under this repository's **Settings → Secrets and variables → Actions**, using a CurseForge API token with upload permission for this project. Configure each repository separately. GitHub releases use the automatically supplied Actions `GITHUB_TOKEN`; no extra personal token is needed.
+
+This repository uploads only `cobblemon-ext-<version>.jar` to CurseForge, with Cobblemon and Kotlin for Forge marked as required dependencies.
+
+After building, inspect the proposed file, version, dependencies and changelog:
+
+```sh
+./gradlew -p publishing curseforgePreview -PreleaseTag=v1.2
+```
+
+Use `./gradlew.bat` on Windows. The preview never reads a token or calls the CurseForge API; it does not validate remote project permissions, dependency slugs or moderation status. Gradle may still download plugin dependencies on the first run. The real `curseforge` task requires an explicit `-PreleaseTag` matching `VERSION`; CI runs it against the downloaded and reverified build artifact.
+
+A successful CurseForge upload may still await moderation. If a connection fails during upload, inspect the project's file list before retrying to avoid duplicates. Choose **Re-run failed jobs** in Actions so successful publishing jobs are not repeated. A CurseForge failure does not retract an already published GitHub release.
+
+[Dependabot](.github/dependabot.yml) checks Gradle dependencies and GitHub Actions weekly; updates require review and passing CI. The publishing plugin is pinned to Java 21-compatible 1.1.28. To update it, run `./gradlew -p publishing --write-verification-metadata sha256 curseforgePreview`, verify the new checksums and commit the separate `publishing/gradle/verification-metadata.xml`. Do not accept unverified checksums just to clear a failed build.
 
 Java and JavaScript code use [MIT](LICENSE); original non-code assets use [CC BY-NC 4.0](LICENSE-ASSETS.md).

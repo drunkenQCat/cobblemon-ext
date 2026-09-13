@@ -1,0 +1,17 @@
+{
+  "projectId": 1693831,
+  "artifactId": "cobblemon-ext",
+  "displayName": "Cobblemon Ext",
+  "gameVersions": [
+    "1.21.1",
+    "NeoForge",
+    "Java 21",
+    "Client",
+    "Server"
+  ],
+  "requiredDependencies": [
+    "cobblemon",
+    "kotlin-for-forge"
+  ],
+  "optionalDependencies": []
+}
