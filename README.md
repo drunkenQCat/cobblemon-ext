@@ -20,6 +20,11 @@ Java package: `com.poopycobblemon.cobblemonext`. Addons compiled against the pre
 | `currentTurn(battleId)` | Latest executed turn, or 0 before the first turn and after cleanup. |
 | `ExtBridge.applyDamage(battle, uuid, amount)` | Requests damage through Showdown, leaving at least 1 HP. |
 | `ExtBridge.applyBoost(battle, uuid, stat, stages)` | Requests a stat-stage change through Showdown. |
+| `ExtHandlers.subscribe(bus, filter, action)` | Declarative registration: runs only when the filter matches; returns a `Registration` handle that can be revoked anytime. |
+| `ExtHandlers.subscribeOnce(bus, filter, action)` | One-shot subscription: auto-unregisters after the first match. |
+| `ExtHandlers.unregisterAll()` | Removes every registration made through this registry (for shutdown-style cleanup). |
+| `ExtSpeciesBuilder.create(ns, id)…build()` | Builds a species datapack JSON in Java (types, base stats, abilities, learnset; `custom(key, value)` passes gameplay extension fields through). |
+| `ExtSpeciesRegistry.register(def)` | Serves registered species through an in-memory datapack; Cobblemon loads and syncs them natively. Register during mod construction; later registrations need /reload. |
 
 Subscribe once during mod initialization. Handlers should check the holder's health, item and animation readiness. Call `ExtBridge.ensurePatched()` and confirm `ExtBridge.isPatched()` before sending requests.
 

@@ -20,6 +20,11 @@ Java 包名为 `com.poopycobblemon.cobblemonext`；使用旧包名的附属模�
 | `currentTurn(battleId)` | 最新已执行回合号；首回合前和清理后为 0。 |
 | `ExtBridge.applyDamage(battle, uuid, amount)` | 通过 Showdown 请求伤害，至少保留 1 HP。 |
 | `ExtBridge.applyBoost(battle, uuid, stat, stages)` | 通过 Showdown 请求能力等级变化。 |
+| `ExtHandlers.subscribe(bus, filter, action)` | 声明式注册：过滤器匹配才执行；返回 `Registration` 句柄，可随时注销。 |
+| `ExtHandlers.subscribeOnce(bus, filter, action)` | 一次性订阅：首次匹配后自动注销。 |
+| `ExtHandlers.unregisterAll()` | 注销通过本表登记的全部订阅（服务器关闭等收尾场景）。 |
+| `ExtSpeciesBuilder.create(ns, id)…build()` | 用 Java 生成种族数据包 JSON（属性、种族值、特性、学习集，`custom(key, value)` 透传玩法扩展字段）。 |
+| `ExtSpeciesRegistry.register(def)` | 注册种族定义：经内存数据包注入，Cobblemon 原生加载并同步客户端；须在模组构造期注册，服务器运行中新注册需 /reload。 |
 
 在模组初始化时订阅一次。处理器需检查携带者的存活、道具和动画就绪状态。发送请求前调用 `ExtBridge.ensurePatched()`，再用 `ExtBridge.isPatched()` 确认补丁已加载。
 

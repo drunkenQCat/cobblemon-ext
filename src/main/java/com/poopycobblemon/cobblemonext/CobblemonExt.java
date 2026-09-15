@@ -15,7 +15,12 @@ import org.slf4j.Logger;
  *       （{@code BATTLE_STARTED_POST} 时参战位尚未就绪，Mixin 进
  *       {@code ActiveBattlePokemon.setBattlePokemon} 补齐该时点）；</li>
  *   <li>{@link ExtBridge}：引擎级伤害/能力值变化的桥接（{@code ShowdownService.send}
- *       自定义协议行 + {@code cobblemon_ext_patch.js} 运行时补丁）。</li>
+ *       自定义协议行 + {@code cobblemon_ext_patch.js} 运行时补丁）；</li>
+ *   <li>{@code handler.ExtHandlers}：通用 handler 注册表——声明式过滤器、
+ *       一次性订阅、可注销句柄与全局清理，业务功能只写「条件 + 动作」；</li>
+ *   <li>{@code species.ExtSpeciesBuilder} + {@code ExtSpeciesRegistry}：
+ *       用 Java 定义自定义宝可梦种族（数据包 JSON），经内存数据包
+ *       {@code AddPackFindersEvent} 注入，由 Cobblemon 原生链路加载并同步客户端。</li>
  * </ul>
  *
  * <p>若上游 Cobblemon 未来接受了对应的功能 PR，删除本库中对应的 Mixin 即可，

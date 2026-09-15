@@ -59,7 +59,35 @@ configurations {
 dependencies {
     cobblemonArtifact "maven.modrinth:cobblemon:${cobblemon_version}"
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:${kotlin_version}"
+
+    // 无头单测：SpeciesBuilder / ExtHandlers 均为纯 Java，不需要 Minecraft 类路径
+    testImplementation platform('org.junit:junit-bom:5.10.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.junit.platform:junit-platform-console-standalone:1.10.1'
+    testImplementation 'com.google.code.gson:gson:2.10.1'
+    testImplementation 'org.slf4j:slf4j-api:2.0.13'
 }
+
+// 不用 Gradle 自带 test 任务：其 worker 通过 @argfile 传递 classpath，Gradle 固定按
+// UTF-8 写、而 Windows JDK 启动器按系统代码页读，项目路径含非 ASCII（本仓库的
+// 实例目录）时会变成乱码路径 → ClassNotFoundException。JavaExec 直接把 classpath
+// 作为进程参数传给 JUnit ConsoleLauncher，绕开该编码坑；CI 上两种方式等价。
+tasks.named('test') { enabled = false }
+
+tasks.register('unitTests', JavaExec) {
+    dependsOn testClasses
+    group = 'verification'
+    description = 'Headless unit tests (JUnit ConsoleLauncher), safe on non-ASCII paths.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'org.junit.platform.console.ConsoleLauncher'
+    args '--disable-banner'
+    args '--details=summary'
+    args '--class-path', sourceSets.test.runtimeClasspath.asPath
+    args '--scan-class-path', layout.buildDirectory.dir('classes/java/test').get().asFile.absolutePath
+    args '--reports-dir', layout.buildDirectory.dir('test-results/unit').get().asFile.absolutePath
+}
+tasks.named('check') { dependsOn 'unitTests' }
 
 // Exercise the bridge against the exact simulator shipped with pinned Cobblemon.
 tasks.register('bridgeRegression', Exec) {
